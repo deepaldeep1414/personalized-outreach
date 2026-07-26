@@ -40,6 +40,8 @@ func (s *Server) RegisterRoutes(mux *http.ServeMux) {
 	mux.HandleFunc("GET /runs/{id}/replay", s.handleReplayRun)
 	mux.HandleFunc("GET /runs/{id}", s.handleGetRun)
 	mux.HandleFunc("POST /runs/{id}/review", s.handleReview)
+	mux.HandleFunc("DELETE /runs/{id}", s.handleDeleteRun)
+	mux.HandleFunc("DELETE /runs", s.handleDeleteAllRuns)
 }
 
 // ── Run ID ────────────────────────────────────────────────────────────────────

@@ -57,6 +57,7 @@ async function initDashboard() {
 
 async function loadRuns() {
   const tbody = $('#runs-tbody');
+  const clearBtn = $('#clear-history-btn');
   if (!tbody) return;
   try {
     const res = await fetch('/runs');
@@ -64,10 +65,13 @@ async function loadRuns() {
     const runs = await res.json();
 
     if (!runs || !runs.length) {
+      if (clearBtn) clearBtn.style.display = 'none';
       tbody.innerHTML = `<tr><td colspan="7" class="empty">
         No runs yet. <a href="/run.html">Start one →</a></td></tr>`;
       return;
     }
+
+    if (clearBtn) clearBtn.style.display = '';
 
     tbody.innerHTML = runs.map(r => `
       <tr>
@@ -83,11 +87,12 @@ async function loadRuns() {
         </td>
         <td>${badge(r.review_status)}</td>
         <td class="small muted">${relTime(r.started_at)}</td>
-        <td class="text-right">
+        <td class="text-right" style="white-space:nowrap">
           ${r.status === 'completed'
             ? `<a href="/run.html?id=${esc(r.id)}&replay=1" class="btn btn-ghost btn-sm" title="Replay offline">⟳ Replay</a> `
             : ''}
           <a href="/run.html?id=${esc(r.id)}" class="btn btn-ghost btn-sm">View →</a>
+          <button onclick="deleteRun('${esc(r.id)}', '${esc(r.name)}')" class="btn btn-ghost btn-danger-ghost btn-sm" title="Delete run history">🗑️</button>
         </td>
       </tr>
     `).join('');
@@ -96,10 +101,46 @@ async function loadRuns() {
       setTimeout(loadRuns, 6000);
     }
   } catch (e) {
+    if (clearBtn) clearBtn.style.display = 'none';
     const tbody2 = $('#runs-tbody');
     if (tbody2) tbody2.innerHTML = `<tr><td colspan="7" class="empty error-text">
       Error loading runs: ${esc(e.message)}</td></tr>`;
     showBanner('Could not load runs: ' + e.message);
+  }
+}
+
+async function deleteRun(id, name) {
+  const confirmMsg = name
+    ? `Are you sure you want to delete the run history for "${name}"?`
+    : 'Are you sure you want to delete this run history?';
+  if (!confirm(confirmMsg)) return;
+
+  try {
+    const res = await fetch(`/runs/${id}`, { method: 'DELETE' });
+    if (!res.ok) {
+      const errData = await res.json().catch(() => ({}));
+      throw new Error(errData.error || res.statusText);
+    }
+    showBanner('Run history deleted.', 'info');
+    await loadRuns();
+  } catch (e) {
+    showBanner('Failed to delete run: ' + e.message, 'error');
+  }
+}
+
+async function clearAllHistory() {
+  if (!confirm('Are you sure you want to delete ALL previous run history? This action cannot be undone.')) return;
+
+  try {
+    const res = await fetch('/runs', { method: 'DELETE' });
+    if (!res.ok) {
+      const errData = await res.json().catch(() => ({}));
+      throw new Error(errData.error || res.statusText);
+    }
+    showBanner('All run history cleared.', 'info');
+    await loadRuns();
+  } catch (e) {
+    showBanner('Failed to clear history: ' + e.message, 'error');
   }
 }
 

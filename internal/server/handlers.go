@@ -474,3 +474,44 @@ func (s *Server) handleReview(w http.ResponseWriter, r *http.Request) {
 	}
 	writeJSON(w, http.StatusOK, map[string]string{"status": body.Action})
 }
+
+// ── DELETE /runs/{id} ─────────────────────────────────────────────────────────
+
+func (s *Server) handleDeleteRun(w http.ResponseWriter, r *http.Request) {
+	id := r.PathValue("id")
+
+	run, err := s.store.GetRun(id)
+	if err != nil {
+		log.Printf("GetRun DB error: %v", err)
+		writeError(w, http.StatusInternalServerError, "database error")
+		return
+	}
+	if run == nil {
+		writeError(w, http.StatusNotFound, "run not found")
+		return
+	}
+	if run.Status == "running" {
+		writeError(w, http.StatusConflict, "cannot delete a run that is still in progress")
+		return
+	}
+
+	if err := s.store.DeleteRun(id); err != nil {
+		log.Printf("DeleteRun DB error: %v", err)
+		writeError(w, http.StatusInternalServerError, "database error")
+		return
+	}
+	writeJSON(w, http.StatusOK, map[string]string{"status": "deleted"})
+}
+
+// ── DELETE /runs ──────────────────────────────────────────────────────────────
+// Clears all run history. Intentionally has no confirmation server-side —
+// the frontend confirms with the user before calling this.
+
+func (s *Server) handleDeleteAllRuns(w http.ResponseWriter, r *http.Request) {
+	if err := s.store.DeleteAllRuns(); err != nil {
+		log.Printf("DeleteAllRuns DB error: %v", err)
+		writeError(w, http.StatusInternalServerError, "database error")
+		return
+	}
+	writeJSON(w, http.StatusOK, map[string]string{"status": "cleared"})
+}

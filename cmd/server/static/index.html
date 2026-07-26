@@ -23,7 +23,10 @@
         <h1>Dashboard</h1>
         <p>All pipeline runs and their review status</p>
       </div>
-      <a href="/run.html" class="btn btn-primary">+ New Run</a>
+      <div class="flex gap-8" style="align-items: center;">
+        <button id="clear-history-btn" onclick="clearAllHistory()" class="btn btn-ghost btn-danger-ghost btn-sm" style="display:none">🗑️ Clear History</button>
+        <a href="/run.html" class="btn btn-primary">+ New Run</a>
+      </div>
     </div>
 
     <div class="card">

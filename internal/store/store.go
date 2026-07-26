@@ -77,12 +77,12 @@ type Run struct {
 	Company      string
 	LinkedInURL  string
 	Notes        string
-	Status       string     // running | completed | failed
+	Status       string // running | completed | failed
 	HookType     string
 	HookTitle    string
 	DraftSubject string
 	DraftBody    string
-	ReviewStatus string     // pending | approved | discarded
+	ReviewStatus string // pending | approved | discarded
 	StartedAt    time.Time
 	FinishedAt   *time.Time
 }
@@ -139,6 +139,40 @@ func (s *Store) CompleteRun(id, status, hookType, hookTitle, draftSubject, draft
 func (s *Store) UpdateReview(id, reviewStatus string) error {
 	_, err := s.db.Exec(`UPDATE runs SET review_status=? WHERE id=?`, reviewStatus, id)
 	return err
+}
+
+// DeleteRun removes one run and all of its stages.
+func (s *Store) DeleteRun(id string) error {
+	tx, err := s.db.Begin()
+	if err != nil {
+		return err
+	}
+	if _, err := tx.Exec(`DELETE FROM run_stages WHERE run_id=?`, id); err != nil {
+		tx.Rollback()
+		return err
+	}
+	if _, err := tx.Exec(`DELETE FROM runs WHERE id=?`, id); err != nil {
+		tx.Rollback()
+		return err
+	}
+	return tx.Commit()
+}
+
+// DeleteAllRuns clears every run and stage from history.
+func (s *Store) DeleteAllRuns() error {
+	tx, err := s.db.Begin()
+	if err != nil {
+		return err
+	}
+	if _, err := tx.Exec(`DELETE FROM run_stages`); err != nil {
+		tx.Rollback()
+		return err
+	}
+	if _, err := tx.Exec(`DELETE FROM runs`); err != nil {
+		tx.Rollback()
+		return err
+	}
+	return tx.Commit()
 }
 
 // ── Read operations ───────────────────────────────────────────────────────────
