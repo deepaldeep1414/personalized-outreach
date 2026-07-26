@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Personalized Outreach — Run</title>
+  <meta name="description" content="Start a new outreach pipeline run or view a live/completed run.">
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body data-page="run">
+
+  <nav class="nav">
+    <a href="/" class="nav-brand">🎯 Outreach Pipeline</a>
+    <div>
+      <a href="/" class="btn btn-ghost btn-sm">← Dashboard</a>
+    </div>
+  </nav>
+
+  <div class="container">
+
+    <!-- ── Form Section ─────────────────────────────────────────────────── -->
+    <div id="form-section">
+      <div class="page-head">
+        <h1>New Outreach Run</h1>
+        <p>Enter a prospect's details and the pipeline will research, score signals, and draft a personalised message for your review.</p>
+      </div>
+
+      <div class="card">
+        <div class="card-body">
+          <form id="prospect-form" autocomplete="off">
+
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label" for="f-name">Full Name *</label>
+                <input class="form-input" id="f-name" name="name"
+                       placeholder="Sarah Chen" required>
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="f-title">Job Title *</label>
+                <input class="form-input" id="f-title" name="title"
+                       placeholder="VP of Engineering" required>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label" for="f-company">Company *</label>
+                <input class="form-input" id="f-company" name="company"
+                       placeholder="Acme Corp" required>
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="f-linkedin">LinkedIn URL</label>
+                <input class="form-input" id="f-linkedin" name="linkedin"
+                       placeholder="https://linkedin.com/in/…" type="url">
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="f-notes">Additional Notes</label>
+              <textarea class="form-input" id="f-notes" name="notes"
+                        placeholder="Context, talking points, how you know them…"></textarea>
+            </div>
+
+            <div class="form-error" id="form-error" style="display:none"></div>
+
+            <div class="text-right mt-20">
+              <button class="btn btn-primary" type="submit" id="submit-btn">
+                Run Pipeline →
+              </button>
+            </div>
+
+          </form>
+        </div>
+      </div>
+    </div><!-- /form-section -->
+
+    <!-- ── Pipeline Section ──────────────────────────────────────────────── -->
+    <div id="pipeline-section" style="display:none">
+
+      <!-- Run identity + live status -->
+      <div class="run-bar">
+        <div class="run-bar-info">
+          <h2 id="run-name"></h2>
+          <span id="run-subtitle"></span>
+        </div>
+        <div class="flex gap-8" style="align-items:center">
+          <span id="run-mode-badge" class="replay-badge" style="display:none">⟳ Replay</span>
+          <span id="run-status-badge" class="badge badge-running">running</span>
+        </div>
+      </div>
+
+      <!-- Stage cards — populated by JS -->
+      <div class="stage-list" id="stages-container"></div>
+
+      <!-- Draft review card — revealed after DraftMessage completes -->
+      <div id="draft-section" style="display:none; margin-top:24px"></div>
+
+    </div><!-- /pipeline-section -->
+
+  </div><!-- /container -->
+
+  <script src="/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,21 @@
+# Environment & Secrets
+.env
+*.env
+!.env.example
+
+# Binaries & Executables
+*.exe
+outreach-server
+outreach
+
+# SQLite Databases
+*.db
+*.db-journal
+*.db-wal
+*.db-shm
+
+# IDE & System Files
+.DS_Store
+.idea/
+.vscode/
+*.log

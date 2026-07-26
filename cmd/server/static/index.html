@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Personalized Outreach — Dashboard</title>
+  <meta name="description" content="Dashboard of all personalized outreach pipeline runs.">
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body data-page="dashboard">
+
+  <nav class="nav">
+    <a href="/" class="nav-brand">🎯 Outreach Pipeline</a>
+    <div>
+      <a href="/run.html" class="btn btn-primary btn-sm">+ New Run</a>
+    </div>
+  </nav>
+
+  <div class="container">
+
+    <div class="page-head flex-between mb-20">
+      <div>
+        <h1>Dashboard</h1>
+        <p>All pipeline runs and their review status</p>
+      </div>
+      <a href="/run.html" class="btn btn-primary">+ New Run</a>
+    </div>
+
+    <div class="card">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Prospect</th>
+            <th>Company</th>
+            <th>Status</th>
+            <th>Hook Signal</th>
+            <th>Review</th>
+            <th>Started</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody id="runs-tbody">
+          <tr><td colspan="7" class="empty">Loading…</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+
+  <script src="/app.js"></script>
+</body>
+</html>
