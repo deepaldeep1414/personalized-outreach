@@ -1,0 +1,12 @@
+services:
+  - type: web
+    name: personalized-outreach
+    env: go
+    buildCommand: go build -o outreach-server ./cmd/server
+    startCommand: ./outreach-server
+    autoDeploy: true
+    envVars:
+      - key: GROQ_API_KEY
+        sync: false
+      - key: TAVILY_API_KEY
+        sync: false

@@ -10,6 +10,7 @@ import (
 	"net/http"
 	"os"
 	"os/signal"
+	"strconv"
 	"strings"
 	"syscall"
 	"time"
@@ -33,6 +34,12 @@ func main() {
 		dryRun = flag.Bool("dry-run", false, "Use mock providers — no API keys required")
 	)
 	flag.Parse()
+
+	if p := os.Getenv("PORT"); p != "" {
+		if pInt, err := strconv.Atoi(p); err == nil {
+			*port = pInt
+		}
+	}
 
 	loadEnv(".env")
 
